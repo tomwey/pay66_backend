@@ -1,0 +1,105 @@
+html,body {
+  height: 100%;
+  margin: 0;
+}
+.login-wrapper {
+  min-height: 100%;
+  .top-sec {
+    position: relative;
+    .top-img {
+      max-width: 100%;
+      width: 100%;
+      height: auto;
+    }
+    .product-info {
+      position: absolute;
+      z-index: 888;
+      top: 25px;
+      left: 35px;
+      display: flex;
+      height: 32px;
+      .logo {
+        flex: 0 0 32px;
+        width: 32px;
+      }
+      .name {
+        flex: 1;
+        height: 32px;
+        line-height: 32px;
+        font-size: 22px;
+        margin: 0;
+        color: #fff;
+        margin-left: 10px;
+      }
+    }
+  }
+  
+  .login-sec {
+    padding: 20px;
+    .login-form {
+      background: #fff;
+      padding: 5px 20px 20px;
+      border-radius: 12px;
+      
+      .input-box {
+        height: 50px;
+        line-height: 50px;
+        background: rgb(237, 237, 239);
+        width: 100%;
+//        list-style: none;
+//        margin: auto;
+        border-radius: 25px;
+        margin-top: 15px;
+        padding: 0 15px;
+        box-sizing: border-box;
+//        padding-right: 10px;
+        input {
+          border: none;
+          background: transparent;
+          width: 100%;
+          color: #333;
+          height: 30px;
+          font-size: 16px;
+          margin-top: 10px;
+          -webkit-tap-highlight-color: transparent;
+              -webkit-tap-highlight-color: transparent;
+              outline: 0;
+              -webkit-appearance: none;
+              border-radius: 3px;
+        }
+        
+        .code {
+          width: 50%;
+        }
+        .code-btn {
+          &.readonly {
+            opacity: 0.6;
+          }
+          display: inline-block;
+          height: 40px;
+          line-height: 40px;
+          text-align: center;
+          float: right;
+          margin-top: 5px;
+          font-size: 16px;
+          cursor: pointer;
+          user-select: none;
+          padding: 0 10px;
+        }
+      }
+      .submit-box {
+        height: 50px;
+        line-height: 50px;
+        text-align: center;
+        font-size: 16px;
+        font-weight: 700;
+        color: #fff;
+        border-radius: 25px;
+        margin-top: 20px;
+        cursor: pointer;
+        user-select: none;
+      }
+    }
+  }
+  
+}
