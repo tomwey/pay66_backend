@@ -54,7 +54,7 @@
       sys_action: '功能操作'
       sys_price_version: '系统套餐'
       sys_version_func_action: '系统套餐功能清单'
-      company: '教育机构'
+      company: '公司机构'
       account: '机构账号'
       role: '机构角色'
       school: '校区'
