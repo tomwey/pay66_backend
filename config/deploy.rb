@@ -2,7 +2,7 @@
 # lock '3.7.2'
 
 set :application, 'pay66_backend'
-set :deploy_user, "root"
+set :deploy_user, "deployer"
 
 # set :scm, :git
 set :repo_url, "git@github.com:tomwey/#{fetch(:application)}.git"
