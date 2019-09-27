@@ -7,11 +7,11 @@
 set :stage, :production
 set :branch, 'master'
 
-role :app, %w{root@91coding.cn}
-role :web, %w{root@91coding.cn}
-role :db,  %w{root@91coding.cn}
+role :app, %w{deployer@small-best.com}
+role :web, %w{deployer@small-best.com}
+role :db,  %w{deployer@small-best.com}
 
-set :server_name, "b.tgs.91coding.cn"
+set :server_name, "b.pay66.afterwind.cn"
 # set :port, "80" # 默认都是80端口
 
 set :full_app_name, "#{fetch(:application)}_#{fetch(:stage)}"

@@ -1,7 +1,7 @@
 # config valid only for Capistrano 3.1
 # lock '3.7.2'
 
-set :application, 'tgs_backend'
+set :application, 'pay66_backend'
 set :deploy_user, "root"
 
 # set :scm, :git
