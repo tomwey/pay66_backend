@@ -119,6 +119,7 @@ module API
           model.avatar.blank? ? '' : model.avatar.url(:big)
         end
         expose :private_token, as: :token
+        expose :opened
       end
       
       class Company < SimpleCompany
