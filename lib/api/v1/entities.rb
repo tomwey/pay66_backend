@@ -105,10 +105,10 @@ module API
           '#' + "#{model.id}"
         end
         expose :slogan do |model, opts|
-          ""
+          model.try(:slogan) || ""
         end
         expose :services do |model, opts|
-          ""
+          model.try(:services) || ""
         end
       end
       
@@ -122,19 +122,19 @@ module API
       end
       
       class Company < SimpleCompany
-        expose :balance, format_with: :rmb_format
-        expose :_balance, :name, :mobile, :address, :opened
-        expose :vip_time, format_with: :chinese_date do |model,opts|
-          model.parent ? model.parent.vip_expired_at : model.vip_expired_at
-        end
+        # expose :balance, format_with: :rmb_format
+        # expose :_balance, :name, :mobile, :address, :opened
+        # expose :vip_time, format_with: :chinese_date do |model,opts|
+        #   model.parent ? model.parent.vip_expired_at : model.vip_expired_at
+        # end
         # expose :left_days do |model,opts|
         #   model.parent ? model.parent.left_days : model.left_days
         # end
         expose :license_no, :license_image_url
         expose :license_image_url, as: :license_image_id
-        expose :admin, using: API::V1::Entities::SimpleAccount do |model,opts|
-          model.accounts.where(is_admin: true).first
-        end
+        # expose :admin, using: API::V1::Entities::SimpleAccount do |model,opts|
+        #   model.accounts.where(is_admin: true).first
+        # end
       end
       
       class SimpleTag < Base
