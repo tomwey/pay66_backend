@@ -93,6 +93,14 @@ module API
         expose :title, :body
       end
       
+      class SimpleCategory < Base
+        expose :name, :sort, :memo
+      end
+      
+      class Category < SimpleCategory
+        expose :parent, using: API::V1::Entities::SimpleCategory
+      end
+      
       class SimpleCompany < Base
         expose :brand
         # expose :logo do |model, opts|
