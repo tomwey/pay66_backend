@@ -2,7 +2,7 @@ ActiveAdmin.register Company do
 # See permitted parameters documentation:
 # https://github.com/activeadmin/activeadmin/blob/master/docs/2-resource-customization.md#setting-up-strong-parameters
 #
-permit_params :name, :brand, :logo, :mobile, :license_no, :license_image, :address, :memo, :opened, :vip_expired_at, :_balance, accounts_attributes: [:id, :name, :avatar, :mobile, :password, :is_admin, :opened, :_destroy]
+permit_params :name, :brand, :logo, :mobile, :license_no, :license_image, :address, :memo, :opened, :vip_expired_at, :_balance, accounts_attributes: [:id, :name, :avatar, :mobile, :password, :is_admin, :opened, :_destroy], app_configs_attributes: [:id, :app_id, :sys_pid, :platform, :application_type, :app_gateway, :redirect_uri, :state, :private_key, :pub_key, :_destroy]
 #
 # or
 #
@@ -57,6 +57,20 @@ form do |f|
       item_form.input :is_admin
     end
   end
+  f.inputs '应用配置' do
+    f.has_many :app_configs, allow_destroy: true, heading: '' do |item_form|
+      item_form.input :app_id, as: :string, placeholder: "例如：2018-10-10"
+      item_form.input :sys_pid
+      item_form.input :platform, as: :select, collection: [['支付宝', 1], ['微信', 2]]
+      item_form.input :application_type
+      item_form.input :app_gateway
+      item_form.input :redirect_uri
+      item_form.input :state
+      item_form.input :private_key, as: :text, rows: 6
+      item_form.input :pub_key, as: :text, rows: 6
+    end
+  end
+  
   actions
 end
 

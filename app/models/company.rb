@@ -5,6 +5,9 @@ class Company < ActiveRecord::Base
   # has_many :admin_account, class_name: 'Account', dependent: :destroy
   accepts_nested_attributes_for :accounts
   
+  has_many :app_configs, dependent: :destroy
+  accepts_nested_attributes_for :app_configs
+  
   mount_uploader :logo, AvatarUploader
   mount_uploader :license_image, PosterUploader
   

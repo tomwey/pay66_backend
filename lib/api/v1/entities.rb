@@ -171,7 +171,7 @@ module API
       end
       
       class SimpleMerchant < Base
-        expose :brand, :name
+        expose :brand, :name, :mobile
         # expose :logo do |model, opts|
         #   model.logo.blank? ? '' : model.logo.url(:big)
         # end
@@ -188,6 +188,9 @@ module API
       end
       
       class Merchant < SimpleMerchant
+        expose :portal_url do |model,opts|
+          ""
+        end
         expose :license_no, :license_image, :license_image_url, :address, :opened, :memo
         expose :admin, using: API::V1::Entities::SimpleMerchAccount do |model,opts|
           model.accounts.where(is_admin: true).first
