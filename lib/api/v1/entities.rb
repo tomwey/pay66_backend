@@ -128,6 +128,9 @@ module API
         end
         expose :private_token, as: :token
         expose :opened
+        expose :role
+        expose :role_name
+        
       end
       
       class Company < SimpleCompany
@@ -163,8 +166,8 @@ module API
         expose :token_md5 do |model,opts|
           Digest::MD5.hexdigest(model.private_token)
         end
-        expose :role
-        expose :role_name
+        
+        expose :parent, using: API::V1::Entities::SimpleAccount
         # expose :permissions, using: API::V1::Entities::Permission
       end
       
