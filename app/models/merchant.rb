@@ -2,6 +2,7 @@ class Merchant < ActiveRecord::Base
   validates :name, :brand, :logo, :mobile, :license_no, :license_image, :address, presence: true
   
   has_many :accounts, class_name: 'MerchAccount', dependent: :destroy
+  belongs_to :company
   
   def self.roles
     l1 = SiteConfig.merch_roles.split(',')
@@ -18,6 +19,17 @@ class Merchant < ActiveRecord::Base
     begin
       self.id = SecureRandom.random_number(100000..1000000)
     end while self.class.exists?(:id => id)
+  end
+  
+  def auth_qrcodes
+    arr = []
+    company.app_configs.each do |config|
+      name = config.platform_name + '授权'
+      redirect_url = (config.redirect_uri || SiteConfig.auth_redirect_uri) + "?cid=#{self.company_id}&p=#{config.platform}&mid=#{self.id}"
+      auth_url = config.app_auth_url + "#{Rack::Utils.escape(redirect_url)}"
+      arr << { name: name, url: redirect_url, qrcode: "#{SiteConfig.create_qrcode_url}?text=#{auth_url}" }
+    end
+    arr
   end
   
   def _balance=(val)

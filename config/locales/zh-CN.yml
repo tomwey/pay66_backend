@@ -14,6 +14,8 @@
     grab_tip: '无'
     open: '打开'
     close: '关闭'
+    ac_1: '支付宝'
+    ac_2: '微信'
     # SignRule:
     #   title: '口令红包'
     #   grab_tip: '注意：只有一次答题的机会！'
@@ -114,6 +116,7 @@
         private_key: '我的私钥'
         pub_key: '平台公钥'
         aes_key: 'AES密钥'
+        auth_url: '授权URL'
       sys_func:
         name: '模块中文名称'
         func_name: '模块名'
