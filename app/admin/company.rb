@@ -70,7 +70,6 @@ form do |f|
       item_form.input :private_key, as: :text, rows: 6
       item_form.input :pub_key, as: :text, rows: 6
       item_form.input :aes_key, label: 'AES密钥'
-      item_form.input :merch_pid, placeholder: '支付宝商家PID或微信平台的商家ID'
     end
   end
   
