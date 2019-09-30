@@ -29,7 +29,7 @@ class Account < ActiveRecord::Base
     return true
   end
   
-  def list_for_type=(t)
+  def self.list_for_type=(t)
     if t == 1
       # 获取所有账号
       where('is_admin = ? or role not in (?)', true, [4,8].join(','))
