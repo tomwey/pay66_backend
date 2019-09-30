@@ -27,7 +27,7 @@ class Merchant < ActiveRecord::Base
       name = config.platform_name + '授权'
       redirect_url = (config.redirect_uri || SiteConfig.auth_redirect_uri) + "?cid=#{self.company_id}&p=#{config.platform}&mid=#{self.id}"
       auth_url = config.app_auth_url + "#{Rack::Utils.escape(redirect_url)}"
-      arr << { name: name, url: redirect_url, qrcode: "#{SiteConfig.create_qrcode_url}?text=#{auth_url}" }
+      arr << { name: name, url: auth_url, qrcode: "#{SiteConfig.create_qrcode_url}?text=#{Rack::Utils.escape(auth_url)}" }
     end
     arr
   end
