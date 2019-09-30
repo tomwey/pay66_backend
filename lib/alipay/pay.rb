@@ -107,7 +107,7 @@ module Alipay
       
       resp = RestClient.get 'https://openapi.alipay.com/gateway.do', { :params => params }
       result = JSON.parse(resp)
-      # puts result
+      puts result
       if result['alipay_open_auth_token_app_response']
         code = result['alipay_open_auth_token_app_response']['code']
         if code && code.to_i == 10000
