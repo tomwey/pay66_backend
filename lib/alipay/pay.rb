@@ -72,8 +72,24 @@ module Alipay
       return pub.verify(digest, sign, alipay_result)
     end
     
+    # 签名
+    def self.sign_params2(params, private_key)
+      arr = params.sort
+      hash = Hash[*arr.flatten]
+      string = hash.delete_if { |k,v| v.blank? }.map { |k,v| "#{k}=#{v}" }.join('&')
+      # string
+      key = OpenSSL::PKey::RSA.new(private_key)
+      digest = OpenSSL::Digest::SHA256.new
+      # puts string
+      sign = key.sign(digest, string.force_encoding("utf-8"))
+      # puts sign
+      sign = Base64.encode64(sign)
+      sign = sign.delete("\n").delete("\r")
+      sign
+    end
+    
     # 三方授权获取app_auth_token
-    def self.get_app_auth_token(app_id, app_auth_code)
+    def self.get_app_auth_token(app_id, app_auth_code, prv_key)
       params = {
         app_id: app_id || SiteConfig.alipay_app_id,
         method: 'alipay.open.auth.token.app',
@@ -87,7 +103,7 @@ module Alipay
         }.to_json
       }
       
-      params[:sign] = sign_params(params)
+      params[:sign] = sign_params2(params, prv_key)
       
       resp = RestClient.get 'https://openapi.alipay.com/gateway.do', { :params => params }
       result = JSON.parse(resp)
