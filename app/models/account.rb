@@ -29,11 +29,12 @@ class Account < ActiveRecord::Base
     return true
   end
   
-  def self.__assoc_type=(t)
+  def self.__assoc_type(t)
     if t == 1
       # 获取所有账号
       where('is_admin = ? or role not in (?)', true, [4,8].join(','))
     elsif t == 2
+      # 获取业务团队账号
       where(role: [4,8])
     end
   end
