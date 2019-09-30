@@ -113,11 +113,16 @@ class HomeController < ApplicationController
             ma.save
           end
         end
+        render text: '操作成功！'
+      else
+        render text: res
       end
     elsif platform.to_i == 2
       # 微信
+    else
+      render text: '暂不支持'
     end
-    render text: '1'
+    # render text: '1'
   end
   
   def qrcode
