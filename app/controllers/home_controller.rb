@@ -97,7 +97,14 @@ class HomeController < ApplicationController
       code,res = Alipay::Pay.get_app_auth_token(app_id, code)
       if code == 0
         res.each do |at|
-          MerchAuth.create(company_id: comp.id, merchant_id: merch.id, provider: 'alipay', app_auth_token: at['app_auth_token'], app_refresh_token: at['app_refresh_token'], auth_app_id: at['auth_app_id'], expires_in: at['expires_in'], re_expires_in: at['re_expires_in'], userid: at['user_id'])
+          if at['user_id'] == merch.alipay_pid
+            ma = MerchAuth.where(app_auth_token: at['app_auth_token'], provider: 'alipay').first
+            if ma.blank?
+              ma = MerchAuth.new(company_id: comp.id, merchant_id: merch.id, provider: 'alipay', app_auth_token: at['app_auth_token'], app_refresh_token: at['app_refresh_token'], auth_app_id: at['auth_app_id'], expires_in: at['expires_in'], re_expires_in: at['re_expires_in'], userid: at['user_id'])
+            end
+            ma.userid = at['user_id']
+            ma.save
+          end
         end
       end
     elsif platform.to_i == 2

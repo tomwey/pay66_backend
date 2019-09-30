@@ -90,7 +90,7 @@ class Merchant < ActiveRecord::Base
   end
   
   def permit_params
-    ['name', 'brand', 'logo', 'license_no', 'license_image', 'mobile', 'address', '_balance', 'memo', 'admin']
+    ['name', 'brand', 'logo', 'license_no', 'license_image', 'mobile', 'address', '_balance', 'memo', 'admin', 'alipay_pid']
   end
   
 end
