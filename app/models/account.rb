@@ -29,6 +29,15 @@ class Account < ActiveRecord::Base
     return true
   end
   
+  def list_for_type=(t)
+    if t == 1
+      # 获取所有账号
+      where('is_admin = ? or role not in (?)', true, [4,8].join(','))
+    elsif t == 2
+      where(role: [4,8])
+    end
+  end
+  
   def permit_params
     ['name', 'mobile', 'password', 'password2', 'role', 'pid']
   end

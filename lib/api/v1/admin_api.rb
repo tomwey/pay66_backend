@@ -59,7 +59,7 @@ module API
             roles = Company.roles
             arr = []
             roles.each do |r|
-              if r.value.to_i != 4 and r.value.to_i != 8
+              if r[:value].to_i != 4 and r[:value].to_i != 8
                 arr << r
               end
             end
@@ -71,7 +71,7 @@ module API
             roles = Company.roles
             arr = []
             roles.each do |r|
-              if r.value.to_i == 4 or r.value.to_i == 8
+              if r[:value].to_i == 4 or r[:value].to_i == 8
                 arr << r
               end
             end
