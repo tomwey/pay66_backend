@@ -188,7 +188,7 @@ module API
       end
       
       class Merchant < SimpleMerchant
-        expose :license_no, :license_image_url, :address, :opened, :memo
+        expose :license_no, :license_image, :license_image_url, :address, :opened, :memo
         expose :admin, using: API::V1::Entities::SimpleMerchAccount do |model,opts|
           model.accounts.where(is_admin: true).first
         end
