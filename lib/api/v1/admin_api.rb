@@ -52,6 +52,40 @@ module API
           end # end get home
         end # end resource
         
+        # 获取站点配置
+        resource :configs, desc: '站点配置相关接口' do
+          desc "获取公司角色"
+          get :comp_roles do
+            roles = Company.roles
+            arr = []
+            roles.each do |r|
+              if r.value.to_i != 4 and r.value.to_i != 8
+                arr << r
+              end
+            end
+            { code: 0, message: 'ok', data: arr }
+          end # end get
+          
+          desc "获取代理角色"
+          get :agent_roles do
+            roles = Company.roles
+            arr = []
+            roles.each do |r|
+              if r.value.to_i == 4 or r.value.to_i == 8
+                arr << r
+              end
+            end
+            { code: 0, message: 'ok', data: arr }
+          end # end get
+          
+          desc "获取商家角色"
+          get :merch_roles do
+            roles = Merchant.roles
+            { code: 0, message: 'ok', data: roles }
+          end # end get
+          
+        end # end resource
+        
         # 通用接口
         resource :common, desc: '通用相关接口' do
           desc "通用查询接口"
