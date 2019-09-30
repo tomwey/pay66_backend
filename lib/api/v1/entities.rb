@@ -102,7 +102,7 @@ module API
       end
       
       class SimpleCompany < Base
-        expose :brand
+        expose :brand, :name
         # expose :logo do |model, opts|
         #   model.logo.blank? ? '' : model.logo.url(:big)
         # end
@@ -147,6 +147,51 @@ module API
         # expose :admin, using: API::V1::Entities::SimpleAccount do |model,opts|
         #   model.accounts.where(is_admin: true).first
         # end
+      end
+      
+      class SimpleMerchAccount < Base
+        expose :mobile, format_with: :null
+        expose :name, format_with: :null
+        expose :avatar_url, :avatar
+        expose :private_token, as: :token
+        expose :opened
+        expose :role
+        expose :role_name
+      end
+      
+      class MerchAccount < SimpleMerchAccount
+        expose :is_admin
+        expose :last_login_at, format_with: :chinese_datetime
+        expose :last_login_ip
+        expose :company, using: API::V1::Entities::Company
+        unexpose :private_token, as: :token
+        expose :token_md5 do |model,opts|
+          Digest::MD5.hexdigest(model.private_token)
+        end
+      end
+      
+      class SimpleMerchant < Base
+        expose :brand, :name
+        # expose :logo do |model, opts|
+        #   model.logo.blank? ? '' : model.logo.url(:big)
+        # end
+        expose :logo_url, :logo
+        expose :theme do |model, opts|
+          '#' + "#{model.id}"
+        end
+        expose :slogan do |model, opts|
+          model.try(:slogan) || ""
+        end
+        expose :services do |model, opts|
+          model.try(:services) || ""
+        end
+      end
+      
+      class Merchant < SimpleMerchant
+        expose :license_no, :license_image_url
+        expose :admin, using: API::V1::Entities::SimpleMerchAccount do |model,opts|
+          model.accounts.where(is_admin: true).first
+        end
       end
       
       class SimpleTag < Base

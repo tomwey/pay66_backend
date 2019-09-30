@@ -1,4 +1,8 @@
 class Merchant < ActiveRecord::Base
+  validates :name, :brand, :logo, :mobile, :license_no, :license_image, :address, presence: true
+  
+  has_many :accounts, class_name: 'MerchAccount', dependent: :destroy
+  
   def self.roles
     l1 = SiteConfig.merch_roles.split(',')
     arr1 = []
@@ -8,4 +12,73 @@ class Merchant < ActiveRecord::Base
     end
     arr1
   end
+  
+  before_create :gen_random_id
+  def gen_random_id
+    begin
+      self.id = SecureRandom.random_number(100000..1000000)
+    end while self.class.exists?(:id => id)
+  end
+  
+  def _balance=(val)
+    if val.present?
+      self.balance = (val.to_f * 100).to_i
+    end
+  end
+  
+  def _balance
+    '%.2f' % (self.balance / 100.0)
+  end
+  
+  def logo_url
+    if logo.blank?
+      ''
+    else
+      asset = Attachment.find_by(id: logo)
+      if asset.blank?
+        ''
+      else
+        asset.data.url
+      end
+    end
+  end
+  
+  def license_image_url
+    if license_image.blank?
+      ''
+    else
+      asset = Attachment.find_by(id: license_image)
+      if asset.blank?
+        ''
+      else
+        asset.data.url
+      end
+    end
+  end
+  
+  # 关联管理员账号
+  def admin=(val)
+    unless val.is_a? Hash
+      return
+    end
+    
+    # asset = Attachment.find_by(id: val['avatar'])
+    # avatar_url = nil
+    # if asset
+    #   avatar_url = asset.data.url
+    # end
+    if self.new_record?
+      self.accounts.build(name: val['name'], avatar: val['avatar'], mobile: val['mobile'], password: val['password'], is_admin: true, company_id: self.company_id)
+    else
+      account = self.accounts.where(is_admin: true, id: val['id']).first
+      account.name = val['name']
+      account.avatar = val['avatar']
+      account.save!
+    end
+  end
+  
+  def permit_params
+    ['name', 'brand', 'logo', 'license_no', 'license_image', 'mobile', 'address', '_balance', 'memo', 'admin']
+  end
+  
 end
