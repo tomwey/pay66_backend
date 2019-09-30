@@ -2,7 +2,7 @@ ActiveAdmin.register Company do
 # See permitted parameters documentation:
 # https://github.com/activeadmin/activeadmin/blob/master/docs/2-resource-customization.md#setting-up-strong-parameters
 #
-permit_params :name, :brand, :logo, :mobile, :license_no, :license_image, :address, :memo, :opened, :vip_expired_at, :_balance, accounts_attributes: [:id, :name, :avatar, :mobile, :password, :is_admin, :opened, :_destroy], app_configs_attributes: [:id, :app_id, :sys_pid, :platform, :application_type, :app_gateway, :redirect_uri, :state, :private_key, :pub_key, :aes_key, :auth_url, :_destroy]
+permit_params :name, :brand, :logo, :mobile, :license_no, :license_image, :address, :memo, :opened, :vip_expired_at, :_balance, accounts_attributes: [:id, :name, :avatar, :mobile, :password, :is_admin, :opened, :_destroy], app_configs_attributes: [:id, :app_id, :sys_pid, :platform, :application_type, :app_gateway, :redirect_uri, :state, :private_key, :pub_key, :aes_key, :auth_url, :merch_pid, :_destroy]
 #
 # or
 #
@@ -70,6 +70,7 @@ form do |f|
       item_form.input :private_key, as: :text, rows: 6
       item_form.input :pub_key, as: :text, rows: 6
       item_form.input :aes_key, label: 'AES密钥'
+      item_form.input :merch_pid, placeholder: '支付宝商家PID或微信平台的商家ID'
     end
   end
   

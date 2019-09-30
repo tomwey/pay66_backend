@@ -117,6 +117,7 @@
         pub_key: '平台公钥'
         aes_key: 'AES密钥'
         auth_url: '授权URL'
+        merch_pid: '商家PID'
       sys_func:
         name: '模块中文名称'
         func_name: '模块名'

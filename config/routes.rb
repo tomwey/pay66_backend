@@ -14,6 +14,8 @@ Rails.application.routes.draw do
   
   # /redpack?id=3848484
   
+  get 'auth/redirect' => 'home#app_auth_redirect'
+  
   namespace :front, path: '' do 
     # 网页认证登录
     get    'login'    => 'sessions#new',       as: :login

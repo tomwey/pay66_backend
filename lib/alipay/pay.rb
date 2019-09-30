@@ -72,6 +72,39 @@ module Alipay
       return pub.verify(digest, sign, alipay_result)
     end
     
+    # 三方授权获取app_auth_token
+    def self.get_app_auth_token(app_id, app_auth_code)
+      params = {
+        app_id: app_id || SiteConfig.alipay_app_id,
+        method: 'alipay.open.auth.token.app',
+        charset: 'utf-8',
+        sign_type: 'RSA2',
+        timestamp: Time.zone.now.strftime('%Y-%m-%d %H:%M:%S'),
+        version: '1.0',
+        biz_content: {
+          grant_type: 'authorization_code',
+          code: app_auth_code
+        }.to_json
+      }
+      
+      params[:sign] = sign_params(params)
+      
+      resp = RestClient.get 'https://openapi.alipay.com/gateway.do', { :params => params }
+      result = JSON.parse(resp)
+      # puts result
+      if result['alipay_open_auth_token_app_response']
+        code = result['alipay_open_auth_token_app_response']['code']
+        if code && code.to_i == 10000
+          tokens = result['alipay_open_auth_token_app_response']['tokens']
+          return 0,tokens
+        else
+          return -2,result['alipay_open_auth_token_app_response']['sub_msg']
+        end
+      else
+        return -1,'非法操作'
+      end
+    end
+    
     # 通知校验
     # def self.notify_verify?(params)
     #

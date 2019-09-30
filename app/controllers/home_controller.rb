@@ -70,6 +70,42 @@ class HomeController < ApplicationController
     # @qr = RQRCode::QRCode.new( 'https://github.com/whomwah/rqrcode', :size => 4, :level => :h )
   end
   
+  def app_auth_redirect
+    cid = params[:cid]
+    mid = params[:mid]
+    app_id = params[:app_id]
+    app_auth_code = params[:app_auth_code]
+    platform = params[:p]
+    puts "#{cid}-#{mid}-#{app_id}-#{app_auth_code}-#{platform}"
+    
+    merch = Merchant.find_by(id: mid)
+    if merch.blank? or merch.deleted_at.present?
+      return
+    end
+    
+    comp = Company.find_by(id: cid)
+    if comp.blank? or comp.deleted_at.present?
+      return
+    end
+    
+    if merch.company_id != comp.id
+      return
+    end
+    
+    if platform.to_i == 1
+      # 支付宝
+      code,res = Alipay::Pay.get_app_auth_token(app_id, code)
+      if code == 0
+        res.each do |at|
+          MerchAuth.create(company_id: comp.id, merchant_id: merch.id, provider: 'alipay', app_auth_token: at['app_auth_token'], app_refresh_token: at['app_refresh_token'], auth_app_id: at['auth_app_id'], expires_in: at['expires_in'], re_expires_in: at['re_expires_in'], userid: at['user_id'])
+        end
+      end
+    elsif platform.to_i == 2
+      # 微信
+    end
+    render text: '1'
+  end
+  
   def qrcode
     if params[:text].blank?
       render text: 'Need text params', status: 404
