@@ -111,8 +111,8 @@
         app_gateway: '应用网关'
         redirect_uri: '授权回调地址'
         state: '自定义参数'
-        private_key: '私钥'
-        pub_key: '公钥'
+        private_key: '我的私钥'
+        pub_key: '平台公钥'
       sys_func:
         name: '模块中文名称'
         func_name: '模块名'
