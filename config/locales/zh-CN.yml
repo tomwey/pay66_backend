@@ -113,6 +113,7 @@
         state: '自定义参数'
         private_key: '我的私钥'
         pub_key: '平台公钥'
+        aes_key: 'AES密钥'
       sys_func:
         name: '模块中文名称'
         func_name: '模块名'
