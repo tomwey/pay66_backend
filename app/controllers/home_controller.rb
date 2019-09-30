@@ -100,6 +100,8 @@ class HomeController < ApplicationController
     if platform.to_i == 1
       # 支付宝
       code,res = Alipay::Pay.get_app_auth_token(app_id, code, ac.private_key)
+      puts code
+      puts res
       if code == 0
         res.each do |at|
           if at['user_id'] == merch.alipay_pid
