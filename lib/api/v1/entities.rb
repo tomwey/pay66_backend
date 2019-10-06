@@ -198,6 +198,15 @@ module API
         end
       end
       
+      class Shop < Base
+        expose :name, :_type, :scope, :phone, :outer_images, :inner_images, :memo, :merchant_id, :address
+        expose :merchant, using: API::V1::Entities::SimpleMerchant
+        expose :type_name do |model,opts|
+          model._type == 1 ? '直营' : '加盟'
+        end
+        expose :category, using: API::V1::Entities::Category
+      end
+      
       class SimpleTag < Base
         expose :name, :memo, :opened
       end
