@@ -159,17 +159,6 @@ module API
         expose :role_name
       end
       
-      class MerchAccount < SimpleMerchAccount
-        expose :is_admin
-        expose :last_login_at, format_with: :chinese_datetime
-        expose :last_login_ip
-        expose :company, using: API::V1::Entities::Company
-        unexpose :private_token, as: :token
-        expose :token_md5 do |model,opts|
-          Digest::MD5.hexdigest(model.private_token)
-        end
-      end
-      
       class SimpleMerchant < Base
         expose :brand, :name, :mobile
         # expose :logo do |model, opts|
@@ -196,6 +185,18 @@ module API
         expose :admin, using: API::V1::Entities::SimpleMerchAccount do |model,opts|
           model.accounts.where(is_admin: true).first
         end
+      end
+      
+      class MerchAccount < SimpleMerchAccount
+        expose :is_admin
+        expose :last_login_at, format_with: :chinese_datetime
+        expose :last_login_ip
+        expose :company, using: API::V1::Entities::Company
+        expose :merchant, using: API::V1::Entities::SimpleMerchant
+        unexpose :private_token, as: :token
+        # expose :token_md5 do |model,opts|
+        #   Digest::MD5.hexdigest(model.private_token)
+        # end
       end
       
       class Shop < Base
@@ -236,6 +237,8 @@ module API
         expose :parent, using: API::V1::Entities::SimpleAccount
         # expose :permissions, using: API::V1::Entities::Permission
       end
+      
+      
       
       class Attachment < Base
         expose :content_type do |model, opts|
