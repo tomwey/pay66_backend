@@ -4,6 +4,8 @@ class Merchant < ActiveRecord::Base
   has_many :accounts, class_name: 'MerchAccount', dependent: :destroy
   belongs_to :company
   
+  belongs_to :from_man, class_name: 'Account', foreign_key: :from_account_id
+  
   def self.roles
     l1 = SiteConfig.merch_roles.split(',')
     arr1 = []
@@ -90,7 +92,7 @@ class Merchant < ActiveRecord::Base
   end
   
   def permit_params
-    ['name', 'brand', 'logo', 'license_no', 'license_image', 'mobile', 'address', '_balance', 'memo', 'admin', 'alipay_pid']
+    ['name', 'brand', 'logo', 'license_no', 'license_image', 'mobile', 'address', '_balance', 'memo', 'admin', 'alipay_pid', 'from_account_id']
   end
   
 end

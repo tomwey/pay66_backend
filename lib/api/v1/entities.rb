@@ -180,11 +180,12 @@ module API
         expose :portal_url do |model,opts|
           ""
         end
-        expose :auth_qrcodes, :alipay_pid
+        expose :auth_qrcodes, :alipay_pid, :from_account_id
         expose :license_no, :license_image, :license_image_url, :address, :opened, :memo
         expose :admin, using: API::V1::Entities::SimpleMerchAccount do |model,opts|
           model.accounts.where(is_admin: true).first
         end
+        expose :from_man, using: API::V1::Entities::SimpleAccount
       end
       
       class MerchAccount < SimpleMerchAccount
