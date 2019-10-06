@@ -207,6 +207,14 @@ module API
         expose :category, using: API::V1::Entities::Category
       end
       
+      class Device < Base
+        expose :device_type, :serial_no, :model, :memo, :opened, :run_mode, :sdk_version, :app_version
+        expose :shop_id, :merchant_id
+        expose :shop, using: API::V1::Entities::Shop
+        expose :merchant, using: API::V1::Entities::SimpleMerchant
+        expose :last_heartbeat_at, format_with: :chinese_datetime
+      end
+      
       class SimpleTag < Base
         expose :name, :memo, :opened
       end
