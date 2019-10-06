@@ -27,7 +27,7 @@ class MerchAccount < ActiveRecord::Base
   end
   
   def permit_params
-    ['name', 'mobile', 'password', 'password2', 'role', 'memo', 'avatar']
+    ['name', 'mobile', 'password', 'password2', 'role', 'memo', 'avatar', 'merchant_id']
   end
   
 end

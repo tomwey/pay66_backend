@@ -190,7 +190,7 @@ module API
       class MerchAccount < SimpleMerchAccount
         expose :is_admin
         expose :last_login_at, format_with: :chinese_datetime
-        expose :last_login_ip
+        expose :last_login_ip, :login_count, :merchant_id
         expose :company, using: API::V1::Entities::Company
         expose :merchant, using: API::V1::Entities::SimpleMerchant
         unexpose :private_token, as: :token
