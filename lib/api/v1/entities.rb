@@ -217,6 +217,12 @@ module API
         expose :last_heartbeat_at, format_with: :chinese_datetime
       end
       
+      class Membership < Base
+        expose :user, using: API::V1::Entities::SimpleUser
+        expose :merchant, using: API::V1::Entities::SimpleMerchant
+        expose :opened, :memo
+      end
+      
       class SimpleTag < Base
         expose :name, :memo, :opened
       end
