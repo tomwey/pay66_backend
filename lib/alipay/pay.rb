@@ -3,6 +3,151 @@ require 'openssl'
 require 'base64'
 module Alipay
   class Pay
+    # 买家向卖家付钱
+    def self.pay2merch(
+      app_id,
+      app_auth_token,
+      out_trade_no,
+      buyer_auth_code,
+      subject,
+      seller_id,
+      total_money,
+      discount_money,
+      operator_id,
+      store_id,
+      terminal_id,
+      isv_id,
+      prv_key,
+      ali_pub_key
+    )
+      params = {
+        app_id: app_id || SiteConfig.alipay_app_id,
+        method: 'alipay.trade.pay',
+        charset: 'utf-8',
+        sign_type: 'RSA2',
+        timestamp: Time.zone.now.strftime('%Y-%m-%d %H:%M:%S'),
+        app_auth_token: app_auth_token,
+        version: '1.0',
+        biz_content: {
+          out_trade_no: out_trade_no || Time.now.to_i.to_s,
+          scene: 'bar_code',
+          auth_code: buyer_auth_code,
+          subject: subject,
+          seller_id: seller_id,
+          total_amount: total_money / 100.0,
+          discountable_amount: (discount_money || 0) / 100.0,
+          operator_id: operator_id,
+          store_id: store_id,
+          terminal_id: terminal_id,
+          timeout_express: '2m'
+          extend_params: {
+            sys_service_provider_id: isv_id
+          }
+        }.to_json
+      }
+      
+      params[:sign] = sign_params2(params, prv_key)
+      
+      resp = RestClient.get 'https://openapi.alipay.com/gateway.do', { :params => params }
+      result = JSON.parse(resp)
+      puts result
+      if rsa_verify_result2(result, ali_pub_key)
+        if result['alipay_trade_pay_response']
+          code = result['alipay_trade_pay_response']['code']
+          if code && code.to_i == 10000
+            return 0,result['alipay_trade_pay_response']
+          else
+            return code.to_i,result['alipay_trade_pay_response']['sub_msg']
+          end  
+        else
+          return -1,'非法结果'
+        end      
+      else
+        return 4001,'验证签名失败'
+      end
+    end
+    
+    # 交易查询
+    def self.query_pay(app_id,app_auth_token,out_trade_no,prv_key,ali_pub_key)
+      params = {
+        app_id: app_id || SiteConfig.alipay_app_id,
+        method: 'alipay.trade.query',
+        charset: 'utf-8',
+        sign_type: 'RSA2',
+        timestamp: Time.zone.now.strftime('%Y-%m-%d %H:%M:%S'),
+        app_auth_token: app_auth_token,
+        version: '1.0',
+        biz_content: {
+          out_trade_no: out_trade_no,
+        }.to_json
+      }
+      
+      params[:sign] = sign_params2(params, prv_key)
+      
+      resp = RestClient.get 'https://openapi.alipay.com/gateway.do', { :params => params }
+      result = JSON.parse(resp)
+      puts result
+      key = 'alipay_trade_query_response'
+      if rsa_verify_result2(result, ali_pub_key, key)
+        if result[key]
+          code = result[key]['code']
+          if code && code.to_i == 10000
+            return 0,result[key]
+          else
+            return code.to_i,result[key]['sub_msg']
+          end  
+        else
+          return -1,'非法结果'
+        end      
+      else
+        return 4001,'验证签名失败'
+      end
+      
+    end
+    
+    # 撤销交易
+    def self.cancel_pay(app_id,app_auth_token,out_trade_no,prv_key,ali_pub_key)
+      params = {
+        app_id: app_id || SiteConfig.alipay_app_id,
+        method: 'alipay.trade.cancel',
+        charset: 'utf-8',
+        sign_type: 'RSA2',
+        timestamp: Time.zone.now.strftime('%Y-%m-%d %H:%M:%S'),
+        app_auth_token: app_auth_token,
+        version: '1.0',
+        biz_content: {
+          out_trade_no: out_trade_no,
+        }.to_json
+      }
+      
+      params[:sign] = sign_params2(params, prv_key)
+      
+      resp = RestClient.get 'https://openapi.alipay.com/gateway.do', { :params => params }
+      result = JSON.parse(resp)
+      puts result
+      key = 'alipay_trade_cancel_response'
+      if rsa_verify_result2(result, ali_pub_key, key)
+        if result[key]
+          code = result[key]['code']
+          if code && code.to_i == 10000
+            return 0,result[key]
+          else
+            return code.to_i,result[key]['sub_msg']
+          end  
+        else
+          return -1,'非法结果'
+        end      
+      else
+        return 4001,'验证签名失败'
+      end
+    end
+    
+    # 退款
+    def self.refund_money()
+      
+    end
+    
+    # 提现
     def self.pay(billno, mobile, name, money)
       params = {
         app_id: SiteConfig.alipay_app_id,
@@ -56,6 +201,20 @@ module Alipay
       sign = Base64.encode64(sign)
       sign = sign.delete("\n").delete("\r")
       sign
+    end
+    
+    # 验签
+    def self.rsa_verify_result2(result, pub_key, field = 'alipay_trade_pay_response')
+      alipay_result = result[field].to_json
+      
+      pub = OpenSSL::PKey::RSA.new(pub_key)
+      digest = OpenSSL::Digest::SHA256.new
+      
+      sign = result['sign']
+      # puts sign
+      
+      sign = Base64.decode64(sign)
+      return pub.verify(digest, sign, alipay_result)
     end
     
     # 验证签名
