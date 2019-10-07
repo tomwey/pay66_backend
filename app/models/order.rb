@@ -45,9 +45,9 @@ class Order < ActiveRecord::Base
   end
   
   def send_to_pay!(auth_code)
-    if order.pay_type == 1
+    if self.pay_type == 1
       self.send_alipay(auth_code)
-    elsif order.pay_type == 2
+    elsif self.pay_type == 2
       self.send_wx_pay(auth_code)
     end
   end
