@@ -48,6 +48,8 @@ module Alipay
       
       params[:sign] = sign_params2(params, prv_key)
       
+      puts params
+      
       resp = RestClient.get 'https://openapi.alipay.com/gateway.do', { :params => params }
       result = JSON.parse(resp)
       puts result
@@ -239,9 +241,9 @@ module Alipay
       # string
       key = OpenSSL::PKey::RSA.new(private_key)
       digest = OpenSSL::Digest::SHA256.new
-      # puts string
+      puts string
       sign = key.sign(digest, string.force_encoding("utf-8"))
-      # puts sign
+      puts sign
       sign = Base64.encode64(sign)
       sign = sign.delete("\n").delete("\r")
       sign
