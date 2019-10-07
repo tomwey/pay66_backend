@@ -42,7 +42,7 @@ module Alipay
           timeout_express: '2m',
           extend_params: {
             sys_service_provider_id: isv_id
-          }
+          }.to_json
         }.to_json
       }
       
