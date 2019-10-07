@@ -39,7 +39,7 @@ module Alipay
           operator_id: operator_id,
           store_id: store_id,
           terminal_id: terminal_id,
-          timeout_express: '2m'
+          timeout_express: '2m',
           extend_params: {
             sys_service_provider_id: isv_id
           }
