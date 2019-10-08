@@ -33,7 +33,7 @@ module Alipay
           scene: 'bar_code',
           auth_code: buyer_auth_code,
           subject: subject,
-          seller_id: seller_id,
+          # seller_id: seller_id,
           total_amount: (total_money / 100.0).to_s,
           discountable_amount: ((discount_money || 0) / 100.0).to_s,
           operator_id: operator_id,
