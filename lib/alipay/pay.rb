@@ -48,7 +48,7 @@ module Alipay
       
       params[:sign] = sign_params2(params, prv_key)
       
-      puts params
+      # puts params
       
       resp = RestClient.get 'https://openapi.alipay.com/gateway.do', { :params => params }
       result = JSON.parse(resp)
