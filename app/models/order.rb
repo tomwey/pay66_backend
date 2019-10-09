@@ -179,7 +179,7 @@ class Order < ActiveRecord::Base
     self.merch_account_id
   end
   
-  def auth_code=(val)
+  def _auth_code=(val)
     prefix = val[0...2]
     prefix = prefix.to_i
     if prefix >= 25 and prefix <= 30
@@ -187,10 +187,10 @@ class Order < ActiveRecord::Base
     elsif prefix >= 10 and prefix <= 15
       self.pay_type = 2 # 微信
     end
-    self[:auth_code] = val
+    self.auth_code = val
   end
   
   def permit_params
-    ['title', 'auth_code', 'device_id', '_money', 'operator_id', '_discount_money', 'memo']
+    ['title', '_auth_code', 'device_id', '_money', 'operator_id', '_discount_money', 'memo']
   end
 end
