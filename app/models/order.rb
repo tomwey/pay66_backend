@@ -77,15 +77,59 @@ class Order < ActiveRecord::Base
     code,res = Alipay::Pay.pay2merch(app_config.app_id, ma.app_auth_token, self.order_no, auth_code, self.title || "付款#{(self.money - (self.discount_money || 0))/100.0}元", ma.userid, self.money, self.discount_money || 0, "#{self.operator.id}", "#{self.shop.id}", "#{self.device.serial_no}",app_config.sys_pid, app_config.private_key, app_config.pub_key)
     if code == 0
       self.payed_at = Time.zone.now
-      self.pay_state = 1 # 支付成功
+      self.buyer_id = res['buyer_logon_id']
+      self.pay_state = 1 # 支付成功 1 成功 2 
       self.save!
     elsif code == 40004 # 支付失败
       self.pay_state = 0
+      self.error_memo = "code:#{code},sub_code:#{res['sub_code']},sub_msg:#{res['sub_msg']}"
       self.save!
     elsif code == 10003 # 等待用户付款
+      self.alipay_loop_query_trade(app_config.app_id,ma.app_auth_token,app_config.private_key,app_config.pub_key)
     elsif code == 20000 # 未知异常
-      code2,res = Alipay::Pay.query_pay(app_config.app_id,
-                      ma.app_auth_token,self.order_no,app_config.private_key,app_config.pub_key)
+      # code2,res = Alipay::Pay.query_pay(app_config.app_id,
+      #                 ma.app_auth_token,self.order_no,app_config.private_key,app_config.pub_key)
+      self.pay_state = 0
+      self.error_memo = "code:#{code},sub_code:#{res['sub_code']},sub_msg:#{res['sub_msg']}"
+      self.save!
+    end
+  end
+  
+  def alipay_loop_query_trade(app_id, app_auth_token, prv_key, pub_key)
+    sleep 5
+    code,res = Alipay::Pay.query_pay(app_id,app_auth_token,self.order_no,prv_key,pub_key)
+    if res['trade_status'] == 'WAIT_BUYER_PAY'
+      count = $redis.get "retry_#{self.order_no}"
+      count = (count || 1).to_i
+      if count >= 10
+        # 取消交易
+        $redis.del "retry_#{self.order_no}"
+        code2,res2 = Alipay::Pay.cancel_pay(app_id,app_auth_token,self.order_no,prv_key,pub_key)
+        if code2 == 0
+          self.pay_state = 2
+          self.save!
+        else
+          self.pay_state = 0
+          self.error_memo = "code:#{code2},sub_code:#{res2['sub_code']},sub_msg:#{res2['sub_msg']}"
+          self.save!
+        end
+      else
+        count = count + 1
+        $redis.set "retry_#{self.order_no}", count
+        # 等5秒再次查询
+        self.alipay_loop_query_trade(app_id, app_auth_token, prv_key, pub_key)
+      end
+    elsif res['trade_status'] == 'TRADE_CLOSED'
+      self.pay_state = 2
+      self.save!
+    elsif res['trade_status'] == 'TRADE_SUCCESS'
+      self.pay_state = 1
+      self.payed_at = Time.zone.now
+      self.save!
+    else
+      self.pay_state = 0
+      self.error_memo = "code:#{code},sub_code:#{res['sub_code']},sub_msg:#{res['sub_msg']}"
+      self.save!
     end
   end
   
