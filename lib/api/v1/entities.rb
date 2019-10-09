@@ -200,21 +200,31 @@ module API
         # end
       end
       
-      class Shop < Base
+      class SimpleShop < Base
         expose :name, :_type, :scope, :phone, :outer_images, :inner_images, :memo, :merchant_id, :address
-        expose :merchant, using: API::V1::Entities::SimpleMerchant
         expose :type_name do |model,opts|
           model._type == 1 ? '直营' : '加盟'
         end
+      end
+      
+      class Shop < SimpleShop
+        # expose :name, :_type, :scope, :phone, :outer_images, :inner_images, :memo, :merchant_id, :address
+        expose :merchant, using: API::V1::Entities::SimpleMerchant
         expose :category, using: API::V1::Entities::Category
       end
       
-      class Device < Base
+      class SimpleDevice < Base
         expose :device_type, :serial_no, :model, :memo, :opened, :run_mode, :sdk_version, :app_version
+        # expose :shop_id, :merchant_id
+        expose :last_heartbeat_at, format_with: :chinese_datetime
+      end
+      
+      class Device < SimpleDevice
+        # expose :device_type, :serial_no, :model, :memo, :opened, :run_mode, :sdk_version, :app_version
         expose :shop_id, :merchant_id
         expose :shop, using: API::V1::Entities::Shop
         expose :merchant, using: API::V1::Entities::SimpleMerchant
-        expose :last_heartbeat_at, format_with: :chinese_datetime
+        # expose :last_heartbeat_at, format_with: :chinese_datetime
       end
       
       class Membership < Base
@@ -245,7 +255,22 @@ module API
         # expose :permissions, using: API::V1::Entities::Permission
       end
       
-      
+      class Order < Base
+        expose :order_no, :title
+        expose :money, format_with: :rmb_format
+        expose :discount_money, format_with: :rmb_format
+        expose :fee_rate
+        expose :pay_type_name, :pay_type
+        expose :l1_earn, format_with: :rmb_format
+        expose :l2_earn, format_with: :rmb_format
+        expose :payed_at, as: :pay_time, format_with: :chinese_datetime
+        expose :pay_state_name, :pay_state
+        expose :memo, :buyer_id, :error_memo
+        expose :merchant, using: API::V1::Entities::SimpleMerchant
+        expose :shop, using: API::V1::Entities::SimpleShop
+        expose :device, using: API::V1::Entities::SimpleDevice
+        expose :operator, using: API::V1::Entities::SimpleMerchAccount
+      end
       
       class Attachment < Base
         expose :content_type do |model, opts|

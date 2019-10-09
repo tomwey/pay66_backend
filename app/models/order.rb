@@ -137,6 +137,23 @@ class Order < ActiveRecord::Base
     
   end
   
+  def pay_type_name
+    case pay_type
+    when 1 then '支付宝'
+    when 2 then '微信'
+    else ''
+    end
+  end
+  
+  def pay_state_name
+    case pay_state
+    when 0 then '交易失败'
+    when 1 then '交易成功'
+    when 2 then '交易关闭'
+    else ''
+    end
+  end
+  
   def _money=(val)
     if val.present?
       self.money = (val.to_f * 100).to_i
