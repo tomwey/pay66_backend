@@ -30,13 +30,6 @@ class Order < ActiveRecord::Base
       self.merchant_id = self.device.merchant_id
       # self.pay_type = self.device.platform
     end
-    prefix = self.auth_code[0...2]
-    prefix = prefix.to_i
-    if prefix >= 25 and prefix <= 30
-      self.pay_type = 1 # 支付宝
-    elsif prefix >= 10 and prefix <= 15
-      self.pay_type = 2 # 微信
-    end
   end
   
   after_create :do_pay
@@ -184,6 +177,17 @@ class Order < ActiveRecord::Base
   
   def operator_id
     self.merch_account_id
+  end
+  
+  def auth_code=(val)
+    prefix = val[0...2]
+    prefix = prefix.to_i
+    if prefix >= 25 and prefix <= 30
+      self.pay_type = 1 # 支付宝
+    elsif prefix >= 10 and prefix <= 15
+      self.pay_type = 2 # 微信
+    end
+    self[:auth_code] = val
   end
   
   def permit_params
