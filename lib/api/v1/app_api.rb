@@ -28,18 +28,13 @@ module API
           optional :type,      type: String, desc: '支付类型，C 表示扫码，F 表示扫脸'
         end
         post :pay do
-          puts params
-          puts 123
+          status 200
           device = Device.find_by(serial_no: params[:sn])
           if device.blank?
             return render_error(4004, '设备不存在')
           end
           
-          puts params
-          
           order = Order.create!(company_id: device.company_id, title: "一笔新订单", _auth_code: params[:auth_code], device_id: device.id, _money: params[:money], order_no: params[:order_no])
-          
-          puts order
           
           render_json(order, API::V1::Entities::Order)
         end # end post pay
