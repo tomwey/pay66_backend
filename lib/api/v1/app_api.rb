@@ -25,6 +25,7 @@ module API
           requires :money,     type: Float,  desc: '订单金额，单位为元'
           requires :auth_code, type: String, desc: '付款码'
           requires :sn,        type: String, desc: '设备序列号'
+          optional :type,      type: String, desc: '支付类型，C 表示扫码，F 表示扫脸'
         end
         post :pay do
           device = Device.find_by(serial_no: params[:sn])
