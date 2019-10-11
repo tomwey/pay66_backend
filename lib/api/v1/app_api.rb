@@ -33,7 +33,11 @@ module API
             return render_error(4004, '设备不存在')
           end
           
+          puts params
+          
           order = Order.create!(title: "一笔新订单", _auth_code: params[:auth_code], device_id: device.id, _money: params[:money], order_no: params[:order_no])
+          
+          puts order
           
           render_json(order, API::V1::Entities::Order)
         end # end post pay
