@@ -1,5 +1,6 @@
 class Order < ActiveRecord::Base
   validates :money, :device_id, :pay_type, presence: true
+  validates_uniqueness_of :order_no
   belongs_to :company
   belongs_to :merchant
   belongs_to :shop
@@ -18,9 +19,11 @@ class Order < ActiveRecord::Base
   
   before_create :generate_order_no
   def generate_order_no
-    begin
-      self.order_no = Time.now.to_s(:number)[2,6] + (Time.now.to_i - Date.today.to_time.to_i).to_s + Time.now.nsec.to_s[0,6]
-    end while self.class.exists?(:order_no => order_no)
+    if self.order_no.blank?
+      begin
+        self.order_no = Time.now.to_s(:number)[2,6] + (Time.now.to_i - Date.today.to_time.to_i).to_s + Time.now.nsec.to_s[0,6]
+      end while self.class.exists?(:order_no => order_no)
+    end
   end
   
   before_create :populate_data
