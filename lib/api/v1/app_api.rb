@@ -27,7 +27,7 @@ module API
           requires :sn,        type: String, desc: '设备序列号'
           optional :type,      type: String, desc: '支付类型，C 表示扫码，F 表示扫脸'
         end
-        post :pay do
+        get :pay do
           status 200
           device = Device.find_by(serial_no: params[:sn])
           if device.blank?
