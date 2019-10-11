@@ -28,7 +28,6 @@ module API
           optional :type,      type: String, desc: '支付类型，C 表示扫码，F 表示扫脸'
         end
         get :pay do
-          status 200
           device = Device.find_by(serial_no: params[:sn])
           if device.blank?
             return render_error(4004, '设备不存在')
