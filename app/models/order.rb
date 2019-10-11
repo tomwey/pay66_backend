@@ -70,7 +70,7 @@ class Order < ActiveRecord::Base
     ma = MerchAuth.where(company_id: self.company_id, merchant_id: self.merchant_id, provider: '1', auth_app_id: app_config.app_id).first
     return if ma.blank?
     
-    code,res = Alipay::Pay.pay2merch(app_config.app_id, ma.app_auth_token, self.order_no, auth_code, self.title || "付款#{(self.money - (self.discount_money || 0))/100.0}元", ma.userid, self.money, self.discount_money || 0, "#{self.operator.id}", "#{self.shop.id}", "#{self.device.serial_no}",app_config.sys_pid, app_config.private_key, app_config.pub_key)
+    code,res = Alipay::Pay.pay2merch(app_config.app_id, ma.app_auth_token, self.order_no, auth_code, self.title || "付款#{(self.money - (self.discount_money || 0))/100.0}元", ma.userid, self.money, self.discount_money || 0, "#{self.operator.try(:id)}", "#{self.shop.try(:id)}", "#{self.device.serial_no}",app_config.sys_pid, app_config.private_key, app_config.pub_key)
     if code == 0
       self.payed_at = Time.zone.now
       self.buyer_id = res['buyer_logon_id']
