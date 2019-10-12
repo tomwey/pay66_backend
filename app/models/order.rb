@@ -49,6 +49,8 @@ class Order < ActiveRecord::Base
   end
   
   def send_alipay(auth_code)
+    return if company.blank?
+    
     app_config = company.app_configs.where(platform: self.pay_type).first
     if app_config.blank?
       return
